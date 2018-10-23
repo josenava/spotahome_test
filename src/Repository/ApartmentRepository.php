@@ -9,5 +9,5 @@ use App\ValueObject\OrderBy;
 interface ApartmentRepository
 {
     public function filter(OrderBy $orderBy, ?int $page, ?int $pageSize): array;
-//    public function save(array $apartments): bool;
+    public function save(array $apartments): bool;
 }

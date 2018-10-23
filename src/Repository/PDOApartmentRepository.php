@@ -42,6 +42,28 @@ SQL;
         }, $apartments);
     }
 
+    public function save(array $apartments): bool
+    {
+        foreach ($apartments as $apartment) {
+            /** @var Apartment $apartment */
+            $insertSql = <<<SQL
+INSERT INTO apartments (id, title, city, link, main_img_link)
+VALUES (?, ?, ?, ?, ?)
+ON DUPLICATE KEY UPDATE
+updated_at = NOW()
+SQL;
+            $this->connection->executeQuery($insertSql, [
+                $apartment->id(),
+                $apartment->title(),
+                $apartment->city(),
+                $apartment->link(),
+                $apartment->imgLink()
+            ]);
+        }
+
+        return true;
+    }
+
 
     /**
      * @param OrderBy $orderBy
