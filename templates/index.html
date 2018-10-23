@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Spotahome challenge!</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+</head>
+<body>
+<main>
+    <section>
+        <header>Apartments table</header>
+        <div id="loading_message"><p>Table loading, hold on :)</p></div>
+        <article>
+            <button type="button" id="download_button">Click me to get the data as JSON</button>
+            <table id="apartments_table" class="table" data-last-query="">
+                <thead>
+                <tr>
+                    <th data-sort-order="+">id</th>
+                    <th data-sort-order="+">city</th>
+                    <th data-sort-order="+">link</th>
+                    <th data-sort-order="+">title</th>
+                    <th data-sort-order="+">main_img_link</th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </article>
+    </section>
+</main>
+<footer>
+    <script
+            src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+            crossorigin="anonymous">
+    </script>
+    <script type="application/javascript">
+        $(document).ready(function(){
+            function init() {
+                $("#apartments_table").hide();
+                $("#download_button").hide();
+
+                const queryProperties = "?page=1&page_size=50";
+
+                $.ajax({
+                    url: `/api/apartments${queryProperties}`,
+                    success: function(result) {
+                        buildTable(result);
+                        $("#loading_message").hide();
+                        $("#apartments_table").data("last-query", queryProperties);
+                        $("#apartments_table").show();
+                        $("#download_button").show();
+                    }
+                });
+
+                $("#apartments_table > thead").click(function(element) {
+                    const field = $(element.target).text();
+                    const sign = toggleSortOrder($(element.target).data("sort-order"));
+                    const queryProperties = `?orderBy=${encodeURIComponent(sign)}${field}&page=1&page_size=50`;
+
+                    $.ajax({
+                        url: `/api/apartments${queryProperties}`,
+                        success: function(result) {
+                            buildTable(result);
+                            $("#apartments_table").data("last-query", queryProperties);
+                            $(element.target).data("sort-order", sign);
+                        }
+                    });
+                });
+
+                $("#download_button").click(function () {
+                    console.log($("#apartments_table").data("last-query"));
+                    const lastQuery = $("#apartments_table").data("last-query");
+
+                    $.ajax({
+                        url: `/api/apartments${lastQuery}&format=json_file`,
+                        xhrFields: {
+                            responseType: 'blob'
+                        },
+                    });
+                })
+            }
+
+            function buildTable(result) {
+                const tableRows = result.map( apartment => {
+                    return `<tr>
+                        <td>${apartment.id}</td>
+                        <td>${apartment.city}</td>
+                        <td><a href="${apartment.link}">${apartment.link}</a></td>
+                        <td>${apartment.title}</td>
+                        <td><a href="${apartment.main_img_link}">${apartment.main_img_link}</a></td>
+                    `
+                }).join('</tr>');
+
+                $("#apartments_table").find("tbody").html(tableRows);
+            }
+
+            function toggleSortOrder(order) {
+                if (order === "+") {
+                    return "-";
+                }
+
+                return "+";
+            }
+
+            init();
+        })
+    </script>
+</footer>
+
+</body>
+
+</html>
