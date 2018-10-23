@@ -73,9 +73,9 @@
 
                     $.ajax({
                         url: `/api/apartments${lastQuery}&format=json_file`,
-                        xhrFields: {
-                            responseType: 'blob'
-                        },
+                        success: function() {
+                            window.location.href = 'apartments.json';
+                        }
                     });
                 })
             }
