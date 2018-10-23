@@ -5,17 +5,17 @@ namespace App\UseCase;
 
 
 use App\DTO\FilterParametersDTO;
-use App\Repository\PDOApartmentRepository;
+use App\Repository\ApartmentRepository;
 use App\ValueObject\OrderBy;
 
 class GetApartmentsUseCase implements GetApartments
 {
     /**
-     * @var PDOApartmentRepository
+     * @var ApartmentRepository
      */
     private $apartmentRepository;
 
-    public function __construct(PDOApartmentRepository $apartmentRepository)
+    public function __construct(ApartmentRepository $apartmentRepository)
     {
         $this->apartmentRepository = $apartmentRepository;
     }
