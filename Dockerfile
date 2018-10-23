@@ -6,7 +6,7 @@ ARG UID
 EXPOSE $UID
 
 RUN adduser -u  ${UID} --disabled-password --gecos "" appuser \
-    && mkdir -p /appdata/www/app-name \
+    && mkdir -p /appdata/www/spotahome-app \
     && chown -R appuser:appuser /appdata/www/spotahome-app
 
 RUN apt-get update \

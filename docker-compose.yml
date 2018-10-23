@@ -22,7 +22,6 @@ services:
     ports:
     - "3306:3306"
     volumes:
-    - ./migrations:/migrations
     - mysql_data:/var/lib/mysql
 
 volumes:
